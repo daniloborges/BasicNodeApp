@@ -1,6 +1,6 @@
 {
   "name": "BasicNodeApp",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "BasicNodeApp",
   "main": "server.js",
   "private": true,
