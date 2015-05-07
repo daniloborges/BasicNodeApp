@@ -4,20 +4,17 @@
 var path = require('path');
 var winston = require('winston');
 var logger = new winston.Logger();
-var production = (process.env.NODE_ENV || '').toLowerCase() === 'production';
 
 module.exports = {
   middleware: function(req, res, next){
     console.log('verbose', req.method, req.url, res.statusCode);
     next();
   },
-  production: production
 };
 
 // Override the built-in console methods with winston hooks
 switch((process.env.NODE_ENV || '').toLowerCase()){
   case 'production':
-    production = true;
     logger.add(winston.transports.File, {
       filename: path.resolve('application.log'),
 
@@ -54,39 +51,31 @@ switch((process.env.NODE_ENV || '').toLowerCase()){
 * Allows configure level on console.log, default level: silly
 * console.log('verbose', 'my verbose log', {metadata: 'yeay!'})
 * Won't interfere with Winston metadata logging and string interpolation
-* @param {flag} check Check if 1st arg is a log level
 */
-function formatArgs(args, check){
-
-  args = Array.prototype.slice.call(args);
-
-  if(check && !(args[0] in logger.levels)){
+console.log = function(){
+  var args = Array.prototype.slice.call(arguments);
+  if(!(args[0] in logger.levels)){
     args.unshift('silly');
   }
-
-  return args;
-}
-
-console.log = function(){
-  logger.log.apply(logger, formatArgs(arguments, true));
+  logger.log.apply(logger,args);
 };
 console.info = function(){
-  logger.info.apply(logger, formatArgs(arguments));
+  logger.info.apply(logger, arguments);
 };
 console.warn = function(){
-  logger.warn.apply(logger, formatArgs(arguments));
+  logger.warn.apply(logger, arguments);
 };
 console.error = function(){
-  logger.error.apply(logger, formatArgs(arguments));
+  logger.error.apply(logger, arguments);
 };
 console.debug = function(){
-  logger.debug.apply(logger, formatArgs(arguments));
+  logger.debug.apply(logger, arguments);
 };
 console.time = function(){
-  logger.profile.apply(logger, formatArgs(arguments));
+  logger.profile.apply(logger, arguments);
 };
 console.timeEnd = function(){
-  logger.profile.apply(logger, formatArgs(arguments));
+  logger.profile.apply(logger, arguments);
 };
 
 // TESTS:
