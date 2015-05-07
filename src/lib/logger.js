@@ -9,10 +9,10 @@ module.exports = {
   middleware: function(req, res, next){
     console.log('verbose', req.method, req.url, res.statusCode);
     next();
-  },
+  }
 };
 
-// Override the built-in console methods with winston hooks
+//Configure overrides
 switch((process.env.NODE_ENV || '').toLowerCase()){
   case 'production':
     logger.add(winston.transports.File, {
@@ -26,11 +26,11 @@ switch((process.env.NODE_ENV || '').toLowerCase()){
       exitOnError: false,
       level: 'warn'
     });
+    overrideConsole();
     break;
 
   case 'test':
-    // Don't set up the logger overrides
-    return;
+    break; // Don't set up the logger overrides
 
   default:
     logger.add(winston.transports.Console, {
@@ -43,40 +43,54 @@ switch((process.env.NODE_ENV || '').toLowerCase()){
     // FIXME: npm i winston-growl --save
     // var growl = require('winston-growl');
     // logger.add(growl, {level: 'info'});
-
+    overrideConsole();
     break;
 }
 
 /**
-* Allows configure level on console.log, default level: silly
-* console.log('verbose', 'my verbose log', {metadata: 'yeay!'})
-* Won't interfere with Winston metadata logging and string interpolation
-*/
-console.log = function(){
-  var args = Array.prototype.slice.call(arguments);
-  if(!(args[0] in logger.levels)){
-    args.unshift('silly');
-  }
-  logger.log.apply(logger,args);
-};
-console.info = function(){
-  logger.info.apply(logger, arguments);
-};
-console.warn = function(){
-  logger.warn.apply(logger, arguments);
-};
-console.error = function(){
-  logger.error.apply(logger, arguments);
-};
-console.debug = function(){
-  logger.debug.apply(logger, arguments);
-};
-console.time = function(){
-  logger.profile.apply(logger, arguments);
-};
-console.timeEnd = function(){
-  logger.profile.apply(logger, arguments);
-};
+ * Override the built-in console methods with winston hooks
+ */
+function overrideConsole(){
+
+ /**
+  * Core logging method exposed to Winston.
+  * @param  {String}   [level='silly']    Level at which to log the message.
+  * @param  {String}   msg      Message to log.
+  * @param  {Object}   [meta]     Additional metadata to attach.
+  * @param  {Function} callback Continuation to respond to when complete.
+  */
+  console.log = function(level, msg, meta, callback){ //eslint-disable-line no-unused-vars
+    var args = Array.prototype.slice.call(arguments);
+    if(!(args[0] in logger.levels)){
+      args.unshift('silly');
+    }
+    logger.log.apply(logger, args);
+  };
+
+  console.info = function(){
+    logger.info.apply(logger, arguments);
+  };
+
+  console.warn = function(){
+    logger.warn.apply(logger, arguments);
+  };
+
+  console.error = function(){
+    logger.error.apply(logger, arguments);
+  };
+
+  console.debug = function(){
+    logger.debug.apply(logger, arguments);
+  };
+
+  console.time = function(){
+    logger.profile.apply(logger, arguments);
+  };
+
+  console.timeEnd = function(){
+    logger.profile.apply(logger, arguments);
+  };
+}
 
 // TESTS:
 // console.time('LSP alive');
