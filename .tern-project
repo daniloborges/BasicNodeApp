@@ -1,7 +1,14 @@
 {
+"libs": [
+    "ecma5",
+    "ecma6"
+  ],
   "plugins": {
     "node": {
         "load": true
+    },
+    "doc_comment": {
+      "fullDocs": true
     }
   }
 }

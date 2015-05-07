@@ -10,6 +10,7 @@
     "email": "me@email.com"
   },
   "dependencies": {
+    "babel": "^5.2.16",
     "body-parser": "^1.12.3",
     "compression": "^1.4.3",
     "cookie-parser": "^1.3.4",
@@ -36,19 +37,26 @@
     "winston-growl": "^0.0.8"
   },
   "scripts": {
-    "clean": "rimraf dist/* public/css/*.css public/js/*.js",
+    "build": "npm run build:stylus && npm run build:babel",
+    "prebuild": "npm run eslint && npm test",
+    "clean": "rimraf dist/* public/css/*.css public/js/*.js es5/* es5",
     "eslint": "eslint src",
     "test": "mocha src/test",
-    "build:stylus": "rimraf public/css/*.css && stylus src/assets/styl -o public/css",
+    "prebuild:stylus": "rimraf public/css/*.css",
+    "build:stylus": "stylus src/assets/styl -o public/css",
+    "prebuild:babel": "rimraf es5/*.js",
+    "build:babel": "babel src --out-dir es5/ --no-comments",
     "build:uglify": "",
-    "build:dev": "npm run build:stylus",
-    "prebuild": "npm run clean && npm run eslint && npm test",
-    "build": "npm run build:dev",
-    "watch:app": "nodemon -w src -e 'js' --exec node server.js",
+    "watch": "parallelshell \"npm run livereload\" \"npm run watch:stylus\"",
+    "watch:runes5" : "npm run watch -- \"npm run watch:es5\"",
+    "watch:runes6" : "npm run watch -- \"npm run watch:es6\"",
+    "watch:es5": "nodemon -w src -e 'js' --exec node server.js",
+    "watch:es6": "nodemon --exec npm start -- stage 0",
+    "watch:babel":"npm run build:babel -- -w",
     "watch:stylus": "npm run build:stylus --  --sourcemap-inline -w",
-    "watch": "parallelshell \"npm run livereload\" \"npm run watch:stylus\" \"npm run watch:app\"",
+    "dev": "npm run open:dev & npm run watch",
     "open:dev": "opener http://localhost:3000",
     "livereload": "live-reload src --port 3001 --delay 1000",
-    "dev": "npm run open:dev & npm run watch"
+    "start": "babel-node ./server.js"
   }
 }
