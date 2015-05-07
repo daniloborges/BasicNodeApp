@@ -1,16 +1,13 @@
 //https://gist.github.com/daniloborges/7f0f0a88cd5dfb6b5af2
-'use strict';
+import * as winston from 'winston';
+import * as path from 'path';
 
-var path = require('path');
-var winston = require('winston');
-var logger = new winston.Logger();
+let logger = new winston.Logger();
 
-module.exports = {
-  middleware: function(req, res, next){
-    console.log('verbose', req.method, req.url, res.statusCode);
-    next();
-  }
-};
+export default function middleware(req, res, next){
+  console.log('verbose', req.method, req.url, res.statusCode);
+  next();
+}
 
 //Configure overrides
 switch((process.env.NODE_ENV || '').toLowerCase()){
@@ -60,35 +57,35 @@ function overrideConsole(){
   * @param  {Function} callback Continuation to respond to when complete.
   */
   console.log = function(level, msg, meta, callback){ //eslint-disable-line no-unused-vars
-    var args = Array.prototype.slice.call(arguments);
+    let args = Array.from(arguments);
     if(!(args[0] in logger.levels)){
       args.unshift('silly');
     }
-    logger.log.apply(logger, args);
+    logger.log(...args);
   };
 
   console.info = function(){
-    logger.info.apply(logger, arguments);
+    logger.info(...arguments);
   };
 
   console.warn = function(){
-    logger.warn.apply(logger, arguments);
+    logger.warn(...arguments);
   };
 
   console.error = function(){
-    logger.error.apply(logger, arguments);
+    logger.error(...arguments);
   };
 
   console.debug = function(){
-    logger.debug.apply(logger, arguments);
+    logger.debug(...arguments);
   };
 
   console.time = function(){
-    logger.profile.apply(logger, arguments);
+    logger.profile(...arguments);
   };
 
   console.timeEnd = function(){
-    logger.profile.apply(logger, arguments);
+    logger.profile(...arguments);
   };
 }
 
