@@ -51,7 +51,7 @@
     "watch:runes5" : "npm run watch -- \"npm run watch:es5\"",
     "watch:runes6" : "npm run watch -- \"npm run watch:es6\"",
     "watch:es5": "nodemon -w src -e 'js' --exec node server.js",
-    "watch:es6": "nodemon --exec npm start -- stage 0",
+    "watch:es6": "nodemon --exec npm start",
     "watch:babel":"npm run build:babel -- -w",
     "watch:stylus": "npm run build:stylus --  --sourcemap-inline -w",
     "dev": "npm run open:dev & npm run watch",
