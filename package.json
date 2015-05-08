@@ -48,15 +48,18 @@
     "build:babel": "babel src --out-dir es5/ --no-comments",
     "build:uglify": "",
     "watch": "parallelshell \"npm run livereload\" \"npm run watch:stylus\"",
-    "watch:runes5" : "npm run watch -- \"npm run watch:es5\"",
-    "watch:runes6" : "npm run watch -- \"npm run watch:es6\"",
+    "prewatch:runes5": "npm run build:babel",
+    "watch:runes5" : "npm run watch -- \"npm run watch:babel\" \"npm run watch:es5\"",
     "watch:es5": "nodemon -w src -e 'js' --exec node server.js",
-    "watch:es6": "nodemon --exec npm start",
-    "watch:babel":"npm run build:babel -- -w",
+    "watch:babel": "babel src --out-dir es5/ --source-maps inline -w",
+    "watch:runes6" : "npm run watch -- \"npm run watch:es6\"",
+    "watch:es6": "nodemon --exec npm run start:es6",
     "watch:stylus": "npm run build:stylus --  --sourcemap-inline -w",
     "dev": "npm run open:dev & npm run watch",
     "open:dev": "opener http://localhost:3000",
     "livereload": "live-reload src --port 3001 --delay 1000",
-    "start": "babel-node ./server.js"
+    "prestart":"npm run build",
+    "start": "node ./server.js",
+    "start:es6": "babel-node ./src/app"
   }
 }
