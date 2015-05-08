@@ -1,11 +1,13 @@
-'use strict';
+import express from 'express';
+import { configure } from './config';
+import appRouters from './approuters';
 
-var express = require('express');
-var app = module.exports = express();
+let app;
+export default app = express();
 
-require('./config')(app);
+configure(app);
 
-app.use('/', require('./approuters'));
+app.use('/', appRouters);
 
 app.listen(app.get('port'), function () {
     console.log('verbose', 'Express server listening on port ' + app.get('port'));

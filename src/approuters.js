@@ -1,10 +1,9 @@
-'use strict';
-var express = require('express');
+import { Router } from 'express';
 
-var router = express.Router(); //eslint-disable-line new-cap
+let router = Router(); //eslint-disable-line new-cap
 
-router.get('/', function(req, res) {
+router.get('/', (req, res) => {
 	res.render('index');
 });
 
-module.exports = router;
+export default router;

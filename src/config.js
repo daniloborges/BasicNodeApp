@@ -1,17 +1,18 @@
-'use strict';
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import flash from 'flash';
+import * as path from 'path';
+import session from 'express-session';
+//import favicon from 'serve-favicon';
+import logger from './lib/logger';
 
-var bodyParser = require('body-parser');
-var compression = require('compression');
-var cookieParser = require('cookie-parser');
-var express = require('express');
-var flash = require('flash');
-var logger = require('./lib/logger');
-var path = require('path');
-var session = require('express-session');
-// var favicon = require('serve-favicon');
-
-
-module.exports = function (app) {
+/**
+ * Apply custom configurations on an Express App
+ * @param  {Express} app App
+ */
+export function configure(app){
 
     app.set('port', process.env.PORT || 3000);
     app.set('view engine', 'jade');
@@ -20,8 +21,7 @@ module.exports = function (app) {
     app.set('views', path.join(__dirname, '../src/views'));
 
     app.disable('x-powered-by');
-
-    app.use(logger.middleware);
+    app.use(logger);
 
     app.use(compression({ threshold: 512 }));
     // TODO: uncomment and point path at favicon if you have one
@@ -43,4 +43,4 @@ module.exports = function (app) {
       secret: 'secret token'
     }));
     app.use(flash());
-};
+}
